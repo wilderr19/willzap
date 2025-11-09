@@ -33,18 +33,30 @@ systemctl stop apache2 2>/dev/null
 ### **4. Obtener Certificado**
 
 ```bash
+# Detener cualquier servicio en puerto 80
+systemctl stop nginx 2>/dev/null
+systemctl stop apache2 2>/dev/null
+pkill -9 -f "python.*8080" 2>/dev/null
+
+# Esperar
+sleep 5
+
+# Generar certificado con Let's Encrypt
+~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+~/.acme.sh/acme.sh --issue -d tudominio.com --standalone --force
+
 # Reemplaza "tudominio.com" con tu dominio real
-~/.acme.sh/acme.sh --issue -d tudominio.com --standalone
+# Ejemplo: ~/.acme.sh/acme.sh --issue -d vip.winzapg.online --standalone --force
 ```
 
 ### **5. Verificar Certificados**
 
 ```bash
 # Buscar tu dominio
-ls -la ~/.acme.sh/ | grep tudominio
+ls -la ~/.acme.sh/ | grep canalx.winzapg.online
 
 # Ver archivos del certificado
-ls -la ~/.acme.sh/tudominio.com_ecc/
+ls -la ~/.acme.sh/ls canalx.winzapg.online_ecc/
 ```
 
 Deberías ver:
@@ -204,9 +216,13 @@ curl https://get.acme.sh | sh && source ~/.bashrc
 
 # 3. Detener servicios
 systemctl stop nginx 2>/dev/null
+systemctl stop apache2 2>/dev/null
+pkill -9 -f "python.*8080" 2>/dev/null
+sleep 5
 
-# 4. Obtener certificado
-~/.acme.sh/acme.sh --issue -d tudominio.com --standalone
+# 4. Obtener certificado con Let's Encrypt
+~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+~/.acme.sh/acme.sh --issue -d tudominio.com --standalone --force
 
 # 5. Ver ubicación
 ls -la ~/.acme.sh/tudominio.com_ecc/
@@ -236,7 +252,11 @@ source ~/.bashrc
 
 # 3. Obtener certificado
 systemctl stop nginx 2>/dev/null
-~/.acme.sh/acme.sh --issue -d vip.winzapg.online --standalone
+systemctl stop apache2 2>/dev/null
+pkill -9 -f "python.*8080" 2>/dev/null
+sleep 5
+~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+~/.acme.sh/acme.sh --issue -d vip.winzapg.online --standalone --force
 
 # 4. Verificar
 ls -la ~/.acme.sh/vip.winzapg.online_ecc/
